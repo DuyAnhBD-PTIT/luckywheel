@@ -90,8 +90,6 @@ export default function Home() {
 
   return (
     <div className="container">
-      <h1 className="main-title">Lucky Wheel Game</h1>
-
       <div className="grid">
         <div className="flex-center">
           <LuckyWheel prizes={prizes} onSpin={handleSpin} isSpinning={isSpinning} setIsSpinning={setIsSpinning} />
