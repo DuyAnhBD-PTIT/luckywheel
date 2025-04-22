@@ -9,7 +9,6 @@ import { ToastContainer, toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import type { Prize, SpinRecord } from "./lib/types"
 
-// Toast duration in milliseconds
 const TOAST_DURATION = 3000
 
 export default function Home() {
@@ -32,7 +31,6 @@ export default function Home() {
       }
     } catch (error) {
       console.error("Error loading data from localStorage:", error)
-      // Optionally show a user-facing error message
       toast.error("Could not load saved data.", { position: "top-center" })
     }
   }, [])
@@ -58,7 +56,7 @@ export default function Home() {
   const addPrize = (prize: Omit<Prize, "id">) => {
     const newPrize = {
       ...prize,
-      id: Date.now().toString(), // Consider a more robust ID generation if needed
+      id: Date.now().toString(), 
     }
 
     const updatedPrizes = [...prizes, newPrize]
@@ -77,7 +75,7 @@ export default function Home() {
 
     if (!selectedPrize) {
       console.error("Selected prize not found after spin:", prizeId)
-      setIsSpinning(false) // Ensure spinning stops if prize is missing
+      setIsSpinning(false)
       toast.error("An error occurred determining the prize.", { position: "top-center" })
       return
     }
@@ -105,24 +103,27 @@ export default function Home() {
       },
     })
 
-    // 3. Update prize count (immediately after spin result is known)
     const updatedPrizes = prizes
       .map((prize) => {
         if (prize.id === prizeId) {
-          // Ensure count doesn't go below 0, although filtering handles it
           const newCount = Math.max(0, prize.count - 1)
           return { ...prize, count: newCount }
         }
         return prize
       })
-      .filter((prize) => prize.count > 0) // Remove prizes with 0 count
+      .filter((prize) => prize.count > 0) 
 
     setPrizes(updatedPrizes)
   }
 
+  const clearHistory = () => {
+    // if (!window.confirm("Are you sure...?")) return;
+    setHistory([]) 
+    toast.info("Spin history cleared.", { position: "top-center", autoClose: 2000 }) // Optional feedback
+  }
+
   return (
     <>
-      {/* Configure ToastContainer once */}
       <ToastContainer
         position="top-center"
         autoClose={TOAST_DURATION}
@@ -138,14 +139,12 @@ export default function Home() {
       <div className="container">
         <div className="grid">
           <div className="flex-center">
-            {/* Pass isSpinning and setIsSpinning down */}
             <LuckyWheel prizes={prizes} onSpin={handleSpin} isSpinning={isSpinning} setIsSpinning={setIsSpinning} />
           </div>
 
           <div>
-            {/* Disable form/list based on isSpinning state */}
             <PrizeForm onAddPrize={addPrize} disabled={isSpinning} />
-            <div style={{ height: "20px" }}></div> {/* Consider using CSS margin/padding */}
+            <div style={{ height: "20px" }}></div> 
             <PrizeList prizes={prizes} onDeletePrize={deletePrize} disabled={isSpinning} />
           </div>
         </div>
@@ -161,7 +160,15 @@ export default function Home() {
               Spin History
             </button>
           </div>
-          <div className="tab-content">{activeTab === "history" && <SpinHistory history={history} />}</div>
+          <div className="tab-content">
+            {activeTab === "history" && (
+              <SpinHistory
+                history={history}
+                onClearHistory={clearHistory} 
+                disabled={isSpinning}         
+              />
+            )}
+          </div>
         </div>
       </div>
     </>

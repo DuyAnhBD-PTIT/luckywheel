@@ -1,14 +1,14 @@
 import type { SpinRecord } from "../lib/types"
+import "../styles/SpinHistory.css";
 
 interface SpinHistoryProps {
   history: SpinRecord[]
-  onClearHistory: () => void // Add this prop
-  disabled?: boolean // Add optional disabled prop
+  onClearHistory: () => void 
+  disabled?: boolean 
 }
 
 export default function SpinHistory({ history, onClearHistory, disabled = false }: SpinHistoryProps) {
   const handleClearClick = () => {
-    // Optional: Add a confirmation dialog
     if (window.confirm("Are you sure you want to clear the entire spin history? This cannot be undone.")) {
       onClearHistory()
     }
@@ -17,19 +17,19 @@ export default function SpinHistory({ history, onClearHistory, disabled = false 
   return (
     <div className="card">
       <div className="card-header">
-        {/* Add a header for the button */}
-        <h3>Spin History</h3>
-        {history.length > 0 && ( // Only show button if there's history
+        <h3 className="spin-history-header">Spin History
+        {history.length > 0 && (
           <button
-            className="button button-danger button-sm" // Added button-sm for smaller size
+            className="button button-danger button-sm" 
             onClick={handleClearClick}
-            disabled={disabled} // Disable button based on prop
+            disabled={disabled} 
             aria-label="Clear all spin history"
           >
             Clear All
           </button>
-        )}
+        )}</h3>
       </div>
+      
       <div className="card-content">
         {history.length === 0 ? (
           <p className="empty-message">No spin history yet</p>
