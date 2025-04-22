@@ -5,6 +5,8 @@ import LuckyWheel from "./components/LuckyWheel"
 import PrizeForm from "./components/PrizeForm"
 import PrizeList from "./components/PrizeList"
 import SpinHistory from "./components/SpinHistory"
+import { ToastContainer, toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 import type { Prize, SpinRecord } from "./lib/types"
 
 export default function Home() {
@@ -76,6 +78,11 @@ export default function Home() {
     }
     setHistory([spinRecord, ...history])
 
+    toast.success(`Congratulations! You won: ${selectedPrize.name}`, {
+      position: "top-center",
+      autoClose: 3000,
+    })
+
     const updatedPrizes = prizes
       .map((prize) => {
         if (prize.id === prizeId) {
@@ -83,37 +90,40 @@ export default function Home() {
         }
         return prize
       })
-      .filter((prize) => prize.count > 0) 
+      .filter((prize) => prize.count > 0)
 
     setPrizes(updatedPrizes)
   }
 
   return (
-    <div className="container">
-      <div className="grid">
-        <div className="flex-center">
-          <LuckyWheel prizes={prizes} onSpin={handleSpin} isSpinning={isSpinning} setIsSpinning={setIsSpinning} />
+    <>
+      <ToastContainer />
+      <div className="container">
+        <div className="grid">
+          <div className="flex-center">
+            <LuckyWheel prizes={prizes} onSpin={handleSpin} isSpinning={isSpinning} setIsSpinning={setIsSpinning} />
+          </div>
+
+          <div>
+            <PrizeForm onAddPrize={addPrize} disabled={isSpinning} />
+            <div style={{ height: "20px" }}></div>
+            <PrizeList prizes={prizes} onDeletePrize={deletePrize} disabled={isSpinning} />
+          </div>
         </div>
 
-        <div>
-          <PrizeForm onAddPrize={addPrize} disabled={isSpinning} />
-          <div style={{ height: "20px" }}></div>
-          <PrizeList prizes={prizes} onDeletePrize={deletePrize} disabled={isSpinning} />
+        <div className="tabs">
+          <div className="tabs-list">
+            <button
+              className="tab"
+              onClick={() => setActiveTab("history")}
+              data-state={activeTab === "history" ? "active" : "inactive"}
+            >
+              Spin History
+            </button>
+          </div>
+          <div className="tab-content">{activeTab === "history" && <SpinHistory history={history} />}</div>
         </div>
       </div>
-
-      <div className="tabs">
-        <div className="tabs-list">
-          <button
-            className="tab"
-            onClick={() => setActiveTab("history")}
-            data-state={activeTab === "history" ? "active" : "inactive"}
-          >
-            Spin History
-          </button>
-        </div>
-        <div className="tab-content">{activeTab === "history" && <SpinHistory history={history} />}</div>
-      </div>
-    </div>
+    </>
   )
 }
