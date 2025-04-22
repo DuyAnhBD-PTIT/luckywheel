@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import "../styles.css"
 import LuckyWheel from "./components/LuckyWheel"
 import PrizeForm from "./components/PrizeForm"
 import PrizeList from "./components/PrizeList"
